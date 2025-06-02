@@ -1,0 +1,25 @@
+# Teaching Assistant
+
+这是一个基于 LLM 和 Agentic RAG 技术的教学辅助系统，采用前后端分离架构。
+
+前端采用 React + TailwindCSS + TypeScript + radix-ui，后端采用 python 的 FastAPI 作为接口处理，Chroma 作为向量数据库，sqlite 作为后端数据库。系统需要 ollama 作为本地模型管理器，管理 embedding 模型和本地 LLM 模型。
+
+系统支持在线 LLM API 和本地 LLM 模型。
+
+包管理器，python 后端是 uv，前端是 pnpm。
+
+## 主要功能
+
+### 知识库构建
+
+1. OCR 与文本提取（各种格式的文本提取）
+2. chunk
+3. 向量化并存入向量数据库
+
+### 用户查询处理
+
+三种模式，分别是：
+
+1. 教案模式：将用户输入放入 由 Agent 组成的 Workflow 中，走一遍流程。
+2. Agent 模式；直接让用户和 Agent 交互。
+3. 自由模式：和 LLM 直接对话，没有 Agent 参与。
