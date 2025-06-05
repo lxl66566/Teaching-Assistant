@@ -10,10 +10,11 @@
 
 ## 部署
 
-### Docker Deployment
+_Docker 部署_ 和 _分别部署_ 任选其一即可。
 
-首先，确保你已经安装了 Docker。
+### Docker 部署
 
+0. 确保已经安装了 Docker。
 1. 创建 Docker 网络
    ```sh
    docker network create teaching-assistant-net
@@ -53,7 +54,7 @@
 
 - **验证运行状态**
   启动成功后，你可以：
-  - 通过浏览器访问 `http://localhost:8000` (或你映射的主机端口) 来使用 Teaching Assistant。
+  - 通过浏览器访问宿主机的 `http://localhost:8000` 来使用 Teaching Assistant。（或者部署服务器的 IP：`http://<your-host-ip>:8000`）
   - 查看容器日志以确认服务是否正常运行：
     ```sh
     docker logs teaching-assistant
