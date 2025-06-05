@@ -25,7 +25,7 @@ COPY backend/pyproject.toml ./
 COPY backend/uv.lock ./
 
 # Install dependencies into a virtual environment
-RUN uv sync --prerelease=allow
+RUN uv sync --prerelease=allow --no-dev
 
 # Copy backend application code
 COPY backend/app/ ./app/

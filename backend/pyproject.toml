@@ -13,25 +13,32 @@ dependencies = [
     "httpx>=0.28",
     "litellm==1.67.6",
     "loguru>=0.7.3",
-    # "magic-pdf[full]==1.3.6",
-    "modelscope>=1.25.0",
     "ollama>=0.4",
     "onnxruntime>=1.22.0",
     "pydantic>=2.11.3",
     "pydantic-settings>=2",
     "pymupdf>=1.25",
     "pymupdf4llm>=0.0.21",
-    "pytest>=8.3.5",
     "python-docx>=1.1.2",
     "python-multipart>=0.0.20",
     "python-pptx>=1.0.2",
     "rapidocr>=2.1.0",
-    "requests>=2.32.3",
+    "requests>=2",
     "surya-ocr>=0.14.2",
     "toml>=0.10.2",
     "uvicorn>=0.34.2",
     "wikipedia>=1.4.0",
 ]
 
+[dependency-groups]
+dev = ["pytest>=8.4.0", "pytest-asyncio>=1.0.0"]
+
 [tool.uv.sources]
 agenticwrapper = { git = "https://github.com/lxl66566/AgenticWrapper" }
+torch = [{ index = "pytorch-cpu" }]
+torchvision = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

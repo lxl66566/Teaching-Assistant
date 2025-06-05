@@ -118,6 +118,7 @@
 操作系统中需要先安装好 [uv](https://docs.astral.sh/uv/)，[pnpm](https://pnpm.io/) 和 [ollama](https://ollama.com/)。
 
 - 后端
+  项目默认使用 cpu 版本的 torch。如果你使用 nvidia 显卡，请修改 backend/pyproject.toml 中的 `torch` 版本为你的 cuda 版本，参考 [Using uv with PyTorch](https://docs.astral.sh/uv/guides/integration/pytorch/)。
   ```sh
   cd backend
   uv run --prerelease=allow -m app
