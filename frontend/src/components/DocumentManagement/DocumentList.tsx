@@ -23,6 +23,15 @@ const DocumentList = () => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   // Add a new state for tracking the last selected index
   const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
+  const [searchText, setSearchText] = useState("");
+  const [debouncedText, setDebouncedText] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedText(searchText);
+    }, 300); // 300ms延迟
+    return () => clearTimeout(timer);
+  }, [searchText]);
 
   const fetchDocuments = async () => {
     const res = await knowledgeAPI.getKnowledgeList();
@@ -332,7 +341,7 @@ const DocumentList = () => {
       <CardContent>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Input placeholder="搜索文档..." className="h-9 w-[200px]" onChange={() => {}} />
+            <Input placeholder="搜索文档..." className="h-9 w-[200px]" onChange={(e) => setSearchText(e.target.value)} />
           </div>
           <div className="flex items-center gap-2">
             <TooltipProvider>
@@ -379,138 +388,140 @@ const DocumentList = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {documents.map((doc: Document, index) => (
-              <TableRow key={doc.id} className={cn("hover:bg-gray-50", doc.type === "folder" && "cursor-pointer")} draggable={false} onClick={() => {}}>
-                <TableCell className="w-8">
-                  <div onClick={(e) => handleCheckboxClick(doc.id, index, e)}>
-                    <Checkbox checked={selectedIds.has(doc.id)} />
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    {React.createElement(getFileIcon(doc))}
-                    {isRenamingId === doc.id ? (
-                      <Input
-                        autoFocus
-                        defaultValue={doc.filename}
-                        className="h-8 w-[200px]"
-                        onBlur={(e) => handleRenameDocument(doc.id, e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleRenameDocument(doc.id, e.currentTarget.value);
-                          } else if (e.key === "Escape") {
-                            setIsRenamingId(null);
-                          }
-                        }}
-                      />
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <span className={cn("cursor-pointer", doc.type === "folder" && "font-medium hover:underline")} onClick={() => {}}>
-                          {doc.filename}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 opacity-0 group-hover:opacity-100"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setIsRenamingId(doc.id);
+            {documents
+              .filter((doc) => !debouncedText || doc.filename.toLowerCase().includes(debouncedText.toLowerCase()))
+              .map((doc: Document, index) => (
+                <TableRow key={doc.id} className={cn("hover:bg-gray-50")} draggable={false}>
+                  <TableCell className="w-8">
+                    <div onClick={(e) => handleCheckboxClick(doc.id, index, e)}>
+                      <Checkbox checked={selectedIds.has(doc.id)} />
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      {React.createElement(getFileIcon(doc))}
+                      {isRenamingId === doc.id ? (
+                        <Input
+                          autoFocus
+                          defaultValue={doc.filename}
+                          className="h-8 w-[200px]"
+                          onBlur={(e) => handleRenameDocument(doc.id, e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleRenameDocument(doc.id, e.currentTarget.value);
+                            } else if (e.key === "Escape") {
+                              setIsRenamingId(null);
+                            }
                           }}
-                        >
-                          <Pencil className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell>{doc.chunk_size}</TableCell>
-                <TableCell>{doc.created_at}</TableCell>
-                <TableCell>
-                  <Switch
-                    checked={doc.enabled}
-                    disabled={isEnabling === doc.id}
-                    onCheckedChange={(checked) => {
-                      // Skip if already processing
-                      if (isEnabling === doc.id) {
-                        return;
-                      }
-                      // Then trigger the API call
-                      enableDocument(doc, checked).catch((error) => {
-                        // Error handling is done in enableDocument
-                        // This try/catch is just to prevent unhandled rejections
-                        console.error("Error toggling document:", error);
-                      });
-                    }}
-                    aria-label="Toggle document embedding"
-                  />
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        doc.status === "completed" && "bg-green-100 text-green-800 border-green-200",
-                        doc.status === "failed" && "bg-red-100 text-red-800 border-red-200",
-                        doc.status === "pending" && "bg-orange-100 text-orange-800 border-orange-200",
-                        !doc.status && "bg-gray-100 text-gray-800 border-gray-200",
-                      )}
-                    >
-                      {doc.status || "Unparsed"}
-                    </Badge>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  {/* For documents, show the existing document actions */}
-                  <div className="flex items-center justify-center gap-2">
-                    {/* Rename button */}
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
+                        />
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span className={cn("cursor-pointer", doc.type === "folder" && "font-medium hover:underline")} onClick={() => {}}>
+                            {doc.filename}
+                          </span>
                           <Button
-                            id={`rename-button-${doc.id}`}
                             variant="ghost"
                             size="icon"
+                            className="h-6 w-6 opacity-0 group-hover:opacity-100"
                             onClick={(e) => {
                               e.stopPropagation();
                               setIsRenamingId(doc.id);
                             }}
-                            className="h-8 w-8"
                           >
-                            <Pencil className="h-4 w-4" />
+                            <Pencil className="h-3 w-3" />
                           </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>重命名文档</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>{doc.chunk_size}</TableCell>
+                  <TableCell>{doc.created_at}</TableCell>
+                  <TableCell>
+                    <Switch
+                      checked={doc.enabled}
+                      disabled={isEnabling === doc.id}
+                      onCheckedChange={(checked) => {
+                        // Skip if already processing
+                        if (isEnabling === doc.id) {
+                          return;
+                        }
+                        // Then trigger the API call
+                        enableDocument(doc, checked).catch((error) => {
+                          // Error handling is done in enableDocument
+                          // This try/catch is just to prevent unhandled rejections
+                          console.error("Error toggling document:", error);
+                        });
+                      }}
+                      aria-label="Toggle document embedding"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          doc.status === "completed" && "bg-green-100 text-green-800 border-green-200",
+                          doc.status === "failed" && "bg-red-100 text-red-800 border-red-200",
+                          doc.status === "pending" && "bg-orange-100 text-orange-800 border-orange-200",
+                          !doc.status && "bg-gray-100 text-gray-800 border-gray-200",
+                        )}
+                      >
+                        {doc.status || "Unparsed"}
+                      </Badge>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {/* For documents, show the existing document actions */}
+                    <div className="flex items-center justify-center gap-2">
+                      {/* Rename button */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              id={`rename-button-${doc.id}`}
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIsRenamingId(doc.id);
+                              }}
+                              className="h-8 w-8"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>重命名文档</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
 
-                    {/* Delete button */}
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            id={`delete-button-${doc.id}`}
-                            variant="ghost"
-                            size="icon"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleDelete(doc.id);
-                            }}
-                            className="h-8 w-8 hover:bg-red-100 hover:text-red-600"
-                          >
-                            <Trash2 className="h-4 w-4 text-red-500" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>删除文档</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                      {/* Delete button */}
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              id={`delete-button-${doc.id}`}
+                              variant="ghost"
+                              size="icon"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(doc.id);
+                              }}
+                              className="h-8 w-8 hover:bg-red-100 hover:text-red-600"
+                            >
+                              <Trash2 className="h-4 w-4 text-red-500" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>删除文档</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
 
