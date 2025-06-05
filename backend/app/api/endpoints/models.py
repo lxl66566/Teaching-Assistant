@@ -40,7 +40,7 @@ async def get_provider_models(
     try:
         models = await model_service.get_provider_models(provider)
         api_key = await model_service.get_provider_api_key(provider)
-        logger.info(f"获取模型服务商 {provider} 的模型列表和 api key {api_key} 成功")
+        logger.debug(f"获取模型服务商 {provider} 的模型列表和 api key {api_key} 成功")
         return {"model": models, "api_key": api_key}
     except ValueError as e:
         logger.error(f"400 获取模型服务商 {provider} 的模型失败: {e}")

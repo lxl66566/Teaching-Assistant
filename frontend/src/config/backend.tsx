@@ -1,6 +1,5 @@
-// src/context/BackendContext.tsx
-
 // 定义 Backend 接口
+// 当前多 backend 模式已经废弃。
 export interface Backend {
   name: string;
   host: string;
@@ -27,7 +26,8 @@ export const backendList: Backend[] = [
   return {
     ...backend,
     toString: () => `${backend.host}:${backend.port}`,
-    toBase: () => `http://${backend.host}:${backend.port}/api`,
+    // 其他代码已经不需要了，只要这里留着就行。dev 访问 localhost:8000，prod 访问 /api
+    toBase: () => import.meta.env.VITE_API_URL,
   };
 });
 
