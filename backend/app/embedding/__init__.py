@@ -8,7 +8,6 @@ import chromadb
 from chromadb.utils.embedding_functions.ollama_embedding_function import (
     OllamaEmbeddingFunction,
 )
-from loguru import logger
 
 from ..config import settings
 
@@ -17,7 +16,7 @@ class Embedding:
     def __init__(self, collection_name="rag_collection") -> None:
         log.info("初始化 ChromaDB 客户端...")
 
-        self.client = chromadb.PersistentClient(path=settings.CHROMA_DIRECTORY)
+        self.client = chromadb.PersistentClient(path=str(settings.CHROMA_DIRECTORY))
         embedding_function = OllamaEmbeddingFunction(
             url=f"{settings.OLLAMA_BASE_URL}/api/embeddings",
             model_name=settings.EMBEDDING_MODEL_NAME,

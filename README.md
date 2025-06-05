@@ -15,7 +15,7 @@
 - 后端
   ```sh
   cd backend
-  uv run uvicorn app.main:app --reload
+  uv run --prerelease=allow -m app
   ```
 - 前端
   ```sh

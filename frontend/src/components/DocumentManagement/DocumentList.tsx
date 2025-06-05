@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Document } from "@/types/document";
 
 const DocumentList = () => {
-  const [documents, setDocuments] = useState<Document[]>([]); // 原始的 documents
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const { toast } = useToast();
   const [isRenamingId, setIsRenamingId] = useState<string | null>(null);
@@ -332,7 +332,7 @@ const DocumentList = () => {
       <CardContent>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Input placeholder="搜索文档..." className="h-9 w-[200px]" onChange={() => {} /*onSearch(e.target.value)*/} />
+            <Input placeholder="搜索文档..." className="h-9 w-[200px]" onChange={() => {}} />
           </div>
           <div className="flex items-center gap-2">
             <TooltipProvider>

@@ -459,7 +459,7 @@ const ChatApp: React.FC = () => {
                   </div>
                   <div className="space-y-2 max-w-md">
                     <h3 className="text-xl font-semibold text-gray-800">欢迎使用 {config.appName}</h3>
-                    <p className="text-gray-500">这是一个基于RAG技术的教学辅助系统。您可以提问关于教学和学习的问题，系统将基于知识库为您提供帮助。</p>
+                    <p className="text-gray-500">这是一个基于 Agentic RAG 技术的教学辅助系统。您可以在导航栏选择模式，系统将为您提供帮助。</p>
                   </div>
                 </div>
               ) : (

@@ -6,6 +6,7 @@ from typing import Dict, List
 import aiosqlite
 from loguru import logger
 
+from ..config import settings
 from ..schemas.query import (
     STATUS_ORDER,
     AppMode,  # 导入 AppMode
@@ -394,7 +395,7 @@ class WorkflowService:
             workflow.final_content = res or "无内容，请检查 workflow 内是否有错误"
 
             # 保存到日志
-            md_path = Path("logs") / workflow_id
+            md_path = Path(settings.LOG_DIR) / workflow_id
             md_path.mkdir(parents=True, exist_ok=True)
             with open(md_path / "最终生成结果_自由模式.md", "w", encoding="utf-8") as f:
                 f.write(workflow.final_content)
@@ -432,7 +433,7 @@ class WorkflowService:
             )
 
             # 保存到日志
-            md_path = Path("logs") / workflow_id
+            md_path = Path(settings.LOG_DIR) / workflow_id
             md_path.mkdir(parents=True, exist_ok=True)
             with open(md_path / "最终生成结果.md", "w", encoding="utf-8") as f:
                 f.write(workflow.final_content)

@@ -1,0 +1,25 @@
+# 应用配置
+APP_NAME = "Teaching Assistant"
+API_V1_STR = "/api"
+
+# 后端数据库配置
+DATABASE_URL = "sqlite:///./data/rag.db"
+
+# 向量数据库配置
+CHROMA_DIRECTORY = "./data/chroma"
+
+# 日志文件的根目录
+LOG_DIR = "./data/logs"
+
+# 文件上传目录
+UPLOAD_DIR = "./data/upload"
+
+# ollama 配置
+OLLAMA_BASE_URL = "http://127.0.0.1:11434"
+
+# 文件上传限制
+MAX_UPLOAD_SIZE = 314572800                                                    # 300MB
+ALLOWED_EXTENSIONS = [".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt", ".md"]
+
+# embedding 模型
+EMBEDDING_MODEL_NAME = "milkey/gte:large-zh-f16"

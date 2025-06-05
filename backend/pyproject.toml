@@ -8,6 +8,7 @@ dependencies = [
     "agenticwrapper",
     "aiosqlite>=0.21",
     "chromadb>=1.0.7",
+    "click>=8.2.1",
     "fastapi>=0.115",
     "httpx>=0.28",
     "litellm==1.67.6",
@@ -27,6 +28,7 @@ dependencies = [
     "rapidocr>=2.1.0",
     "requests>=2.32.3",
     "surya-ocr>=0.14.2",
+    "toml>=0.10.2",
     "uvicorn>=0.34.2",
     "wikipedia>=1.4.0",
 ]

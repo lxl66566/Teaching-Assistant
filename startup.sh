@@ -1,2 +1,3 @@
+
 cd backend
-uv run --prerelease=allow uvicorn app.main:app --reload
+uv run --prerelease=allow -m app $@
