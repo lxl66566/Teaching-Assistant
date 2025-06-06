@@ -33,11 +33,7 @@ _Docker 部署_ 和 _分别部署_ 任选其一即可。
      ```sh
      docker exec -it ollama ollama pull milkey/gte:large-zh-f16
      ```
-3. 拉取 Teaching Assistant Docker 镜像
-   ```sh
-   docker pull ghcr.io/lxl66566/teaching-assistant:latest
-   ```
-4. 运行 Teaching Assistant Docker 容器
+3. 拉取并运行 Teaching Assistant Docker 容器
    ```sh
    docker run -d \
      --name teaching-assistant \

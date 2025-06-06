@@ -33,16 +33,16 @@ COPY backend/app/ ./app/
 # Final stage: Runtime image
 FROM python:3.12-slim-bookworm
 
-WORKDIR /app
+WORKDIR /app/backend
 
 # Copy virtual environment from backend_builder
 COPY --from=backend_builder /app/backend/.venv ./.venv
 
 # Copy backend application code
-COPY backend/app/ ./backend/app/
+COPY backend/app/ ./app/
 
 # Copy frontend build artifacts
-COPY --from=frontend_builder /app/frontend/dist ./frontend/dist
+COPY --from=frontend_builder /app/frontend/dist /app/frontend/dist
 
 # Expose port
 EXPOSE 8000
@@ -52,4 +52,4 @@ RUN adduser --system --group appuser
 USER appuser
 
 # Set entrypoint: activate virtual environment and run the app
-CMD ["sh", "-c", ". ./.venv/bin/activate && python -m backend.app"]
+CMD ["sh", "-c", ". ./.venv/bin/activate && python -m app"]
