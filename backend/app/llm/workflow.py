@@ -1,4 +1,5 @@
 import asyncio
+import re
 import uuid
 from pathlib import Path
 from typing import Dict, List
@@ -345,6 +346,28 @@ class WorkflowService:
                     tools=[query_vector_db, get_wikipedia_content],
                     description="Agent 模式问答",
                 )
+            ]
+        elif mode == AppMode.GRAPH:
+
+            async def remove_json_headers(text: str) -> str:
+                """去除 json 头部"""
+                return re.sub(
+                    r"^\s*```(?:json)?\s*([\s\S]*?)\s*```\s*$",
+                    r"\1",
+                    text.strip(),
+                    flags=re.DOTALL,
+                )
+
+            agents = [
+                RAGAgent(
+                    name="Graph",
+                    prompt="""你是一个教学领域专家，请你调用工具获取文本后，结合用户需求，提取知识图谱。
+你可以多次调用工具（最多3次）直到返回结果的相关性不足为止。由于 query_vector_db 不支持 offset，你在多次调用时可以将 n_results 设为 100，200，400 递增。
+**你的输出格式必须是一个 json 字符串，类型为{"nodes":{"id":string}[],"edges":{"source":string,"target":string,"label"?:string}[]}。不要输出除了该 json 以外的任何内容。**
+""",
+                    tools=[query_vector_db],
+                    description="知识图谱提取",
+                ).add_after_query_func(remove_json_headers),
             ]
 
         try:

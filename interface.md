@@ -140,7 +140,7 @@
       role: "user" | "assistant";
       content: string;
     }>;
-    mode?: "teaching plan" | "agent" | "free"; // 当前模式，默认为 "teaching plan"
+    mode?: "teaching plan" | "agent" | "free" | "graph"; // 当前模式，默认为 "teaching plan"
     options?: {
       temperature?: number;     // 温度参数（可选）
       max_tokens?: number;      // 最大生成token数（可选）

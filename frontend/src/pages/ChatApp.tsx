@@ -20,6 +20,8 @@ import MarkdownRenderer from "@/components/MarkdownRenderer";
 import { ChevronRightIcon, ChevronDownIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMode } from "@/context/ModeContext";
+import { AppMode } from "@/types/chat";
+import KnowledgeGraph from "@/components/KnowledgeGraph";
 
 // 定义前端使用的消息类型
 export interface Message {
@@ -349,13 +351,19 @@ const ChatApp: React.FC = () => {
               <WorkflowTimeline steps={msg.workflow.steps} currentStep={msg.workflow.current_step} status={msg.workflow.status} />
             )}
 
-            {/* 最终内容显示部分保持不变 */}
-            {msg.workflow.status === "completed" && msg.workflow.final_content && (
-              <div className="mt-4 p-4 border-t border-gray-200">
-                <h3 className="font-medium text-gray-700 mb-2">最终回答</h3>
-                <MarkdownRenderer markdown={msg.workflow.final_content} />
-              </div>
-            )}
+            {/* 最终内容显示部分 */}
+            {msg.workflow.status === "completed" &&
+              msg.workflow.final_content &&
+              (currentMode === AppMode.Graph ? (
+                <div className="mt-4 p-4 border-2 border-gray-200 rounded-lg">
+                  <KnowledgeGraph graphData={JSON.parse(msg.workflow.final_content)} />
+                </div>
+              ) : (
+                <div className="mt-4 p-4 border-t border-gray-200">
+                  <h3 className="font-medium text-gray-700 mb-2">最终回答</h3>
+                  <MarkdownRenderer markdown={msg.workflow.final_content} />
+                </div>
+              ))}
 
             {/* 错误消息部分保持不变 */}
             {msg.workflow.error && (

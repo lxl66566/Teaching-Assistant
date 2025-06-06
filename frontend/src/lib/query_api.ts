@@ -1,5 +1,5 @@
 import { getCurrentBackend } from "@/config/backend";
-import { AppMode, ChatMessage, ChatOptions } from "@/types/chat";
+import { AppMode, AppModeToInterfaceString, ChatMessage, ChatOptions } from "@/types/chat";
 
 export interface WorkflowStep {
   index: number;
@@ -36,7 +36,7 @@ export class QueryAPI {
         body: JSON.stringify({
           content,
           messages,
-          mode: mode === AppMode.LessonPlan ? "teaching plan" : mode === AppMode.Agent ? "agent" : "free",
+          mode: AppModeToInterfaceString(mode),
           options: options || {},
         }),
       });

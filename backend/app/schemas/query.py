@@ -30,6 +30,7 @@ class AppMode(str, Enum):
     TEACHING_PLAN = "teaching plan"
     AGENT = "agent"
     FREE = "free"
+    GRAPH = "graph"
 
 
 class SendMessageRequest(BaseModel):
