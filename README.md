@@ -22,6 +22,7 @@ _Docker 部署_ 和 _从源码部署_ 任选其一即可。
 2. 启动 Ollama 容器并拉取模型
    ```sh
    docker run -d \
+     --restart always \
      -v ./ollama_data:/root/.ollama \
      -p 11434:11434 \
      --name ollama \
@@ -36,21 +37,22 @@ _Docker 部署_ 和 _从源码部署_ 任选其一即可。
 3. 拉取并运行 Teaching Assistant Docker 容器
    ```sh
    docker run -d \
+     --restart always \
      --name teaching-assistant \
-     -p 8000:8000 \
+     -p 80:8000 \
      -v ./backend_data:/app/backend/data \
      --network teaching-assistant-net \
      ghcr.io/lxl66566/teaching-assistant:latest
    ```
-   - `-p 8000:8000`: 将容器的 8000 端口映射到宿主机的 8000 端口。你可以根据需要修改宿主机的端口，例如 `-p 12345:8000`。
+   - `-p 80:8000`: 将容器的 80 端口映射到宿主机的 8000 端口。你可以根据需要修改宿主机的端口，例如 `-p 12345:8000`。
    - `-v ./backend_data:/app/backend/data`: 将宿主机当前目录下的 `backend_data` 文件夹挂载到容器内的 `/app/backend/data`。这个目录用于存储 Chroma 数据库等数据。**请确保此目录在宿主机上存在且持久化，或者将其替换为一个绝对路径，例如 `-v /path/to/your/persistent_data/backend_data:/app/backend/data`。**
    - `--network teaching-assistant-net`: 将 `teaching-assistant` 容器连接到之前创建的 `teaching-assistant-net` 网络。这样，后端服务可以通过服务名 `ollama` (即 Ollama 容器的名称) 访问 Ollama 服务。
+4. 等待依赖安装完成与资源下载。下载大小约为 2-3GB，请耐心等待，并保持网络（包括外网访问）畅通。可以使用 `docker logs -f teaching-assistant` 查看当前进度，当输出为 `Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)` 时代表项目已成功启动。
+5. 启动成功后，通过浏览器访问宿主机的 `http://localhost` 来使用 Teaching Assistant。（或者部署服务器的 IP：`http://<your-host-ip>`，端口为 run 时传入的端口）
 
 <details><summary>其他配置</summary>
 
 - **验证运行状态**
-  启动成功后，你可以：
-  - 通过浏览器访问宿主机的 `http://localhost:8000` 来使用 Teaching Assistant。（或者部署服务器的 IP：`http://<your-host-ip>:8000`）
   - 查看容器日志以确认服务是否正常运行：
     ```sh
     docker logs teaching-assistant
@@ -63,7 +65,7 @@ _Docker 部署_ 和 _从源码部署_ 任选其一即可。
     ```sh
     docker run -d \
       --name teaching-assistant \
-      -p 8000:8000 \
+      -p 80:8000 \
       -v ./backend_data:/app/backend/data \
       --network teaching-assistant-net \
       -e HTTP_PROXY="$HTTP_PROXY" \
@@ -74,7 +76,7 @@ _Docker 部署_ 和 _从源码部署_ 任选其一即可。
     ```powershell
     docker run -d `
       --name teaching-assistant `
-      -p 8000:8000 `
+      -p 80:8000 `
       -v ./backend_data:/app/backend/data `
       --network teaching-assistant-net `
       -e HTTP_PROXY="$env:HTTP_PROXY" `
@@ -88,7 +90,7 @@ _Docker 部署_ 和 _从源码部署_ 任选其一即可。
   ```sh
   docker run -d \
     --name teaching-assistant \
-    -p 8000:8000 \
+    -p 80:8000 \
     -v ./backend_data:/app/backend/data \
     -v ./my_custom_config.toml:/app/my_app_config.toml \
     --network teaching-assistant-net \
@@ -145,3 +147,9 @@ _Docker 部署_ 和 _从源码部署_ 任选其一即可。
 ```sh
 uv run --prerelease=allow -m app /path/to/xxx.toml
 ```
+
+在 docker 传入配置会稍微麻烦一些，请参考[Docker 部署](#docker-部署)中的 _其他配置_ 章节。
+
+## 提示
+
+- 本项目需要在能够访问外网的网络环境下运行。
