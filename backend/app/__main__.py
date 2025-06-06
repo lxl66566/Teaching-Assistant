@@ -86,11 +86,10 @@ def create_app(config_file: Optional[Path] = None) -> FastAPI:
 
 
 @click.command()
-@click.option(
-    "--config",
+@click.argument(
     "config_file",
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
-    help="Path to a TOML configuration file.",
+    required=False,
 )
 def main(config_file: Optional[Path]):
     """

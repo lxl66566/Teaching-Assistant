@@ -23,3 +23,6 @@ ALLOWED_EXTENSIONS = [".pdf", ".doc", ".docx", ".ppt", ".pptx", ".txt", ".md"]
 
 # embedding 模型
 EMBEDDING_MODEL_NAME = "milkey/gte:large-zh-f16"
+
+# 每次向量数据库添加的文档数量
+EMBEDDING_BATCH_SIZE = 100

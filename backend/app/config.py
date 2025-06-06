@@ -45,6 +45,9 @@ class Settings(BaseSettings):
     # embedding
     EMBEDDING_MODEL_NAME: str = "milkey/gte:large-zh-f16"
 
+    # 每次向量数据库添加的文档数量
+    EMBEDDING_BATCH_SIZE: int = 100
+
     model_config = SettingsConfigDict(
         case_sensitive=True,
         env_file=".env",

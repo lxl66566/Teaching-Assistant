@@ -27,7 +27,8 @@ class Embedding:
         )
         self.add_lock = asyncio.Lock()
 
-    async def add(self, texts: list[str], doc_id: str, batch_size: int = 100):
+    async def add(self, texts: list[str], doc_id: str):
+        batch_size = settings.EMBEDDING_BATCH_SIZE
         # 为每个文本生成唯一的 ID
         ids = [f"{doc_id}_{i}" for i in range(len(texts))]
 

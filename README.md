@@ -10,7 +10,7 @@
 
 ## 部署
 
-_Docker 部署_ 和 _分别部署_ 任选其一即可。
+_Docker 部署_ 和 _从源码部署_ 任选其一即可。
 
 ### Docker 部署
 
@@ -93,10 +93,10 @@ _Docker 部署_ 和 _分别部署_ 任选其一即可。
     -v ./my_custom_config.toml:/app/my_app_config.toml \
     --network teaching-assistant-net \
     ghcr.io/lxl66566/teaching-assistant:latest \
-    --config /app/my_app_config.toml
+    /app/my_app_config.toml
   ```
   - `-v ./my_custom_config.toml:/app/my_app_config.toml`: 将宿主机的 `my_custom_config.toml` 文件挂载到容器内的 `/app/my_app_config.toml`。
-  - `--config /app/my_app_config.toml`: 告诉 `teaching-assistant` 应用去加载容器内 `/app/my_app_config.toml` 这个配置文件。
+  - `/app/my_app_config.toml`: 告诉 `teaching-assistant` 应用去加载容器内 `/app/my_app_config.toml` 这个配置文件。
 - **停止和清理**
   如果你需要停止或移除容器：
   ```sh
@@ -110,24 +110,38 @@ _Docker 部署_ 和 _分别部署_ 任选其一即可。
 
 </details>
 
-### 分别部署
+### 从源码部署
 
-操作系统中需要先安装好 [uv](https://docs.astral.sh/uv/)，[pnpm](https://pnpm.io/) 和 [ollama](https://ollama.com/)。
+操作系统中需要先安装好 git，[uv](https://docs.astral.sh/uv/)，nodejs，[pnpm](https://pnpm.io/) 和 [ollama](https://ollama.com/)。
 
-- 后端
-  项目默认使用 cpu 版本的 torch。如果你使用 nvidia 显卡，请修改 backend/pyproject.toml 中的 `torch` 版本为你的 cuda 版本，参考 [Using uv with PyTorch](https://docs.astral.sh/uv/guides/integration/pytorch/)。
-  ```sh
-  cd backend
-  uv run --prerelease=allow -m app
-  ```
-- 前端
-  ```sh
-  cd frontend
-  pnpm install
-  pnpm dev
-  ```
-- ollama
-  ```sh
-  ollama serve
-  ollama pull milkey/gte:large-zh-f16       # 新开一个终端执行
-  ```
+1. 克隆仓库
+   ```sh
+   git clone https://github.com/lxl66566/teaching-assistant.git --depth 1
+   cd teaching-assistant
+   ```
+2. 构建前端
+   ```sh
+   cd frontend
+   pnpm i
+   pnpm build
+   cd ..
+   ```
+3. 启动 ollama
+   ```sh
+   ollama serve
+   ollama pull milkey/gte:large-zh-f16       # 新开一个终端执行
+   ```
+4. 启动后端
+   项目默认使用 cpu 版本的 torch。如果你使用 nvidia 显卡，请修改 backend/pyproject.toml 中的 `torch` 版本为你的 cuda 版本，参考 [Using uv with PyTorch](https://docs.astral.sh/uv/guides/integration/pytorch/)。
+   ```sh
+   cd backend
+   uv run --prerelease=allow -m app
+   ```
+
+## 传入配置（可选）
+
+你可以修改一些配置，以自定义应用的行为。新建一个 `xxx.toml` 文件，以 [config.toml](./backend/app/config.toml) 为模板进行修改，然后在启动命令中传入该文件：
+
+```sh
+uv run --prerelease=allow -m app /path/to/xxx.toml
+```
