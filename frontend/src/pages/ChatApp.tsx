@@ -355,7 +355,7 @@ const ChatApp: React.FC = () => {
             {msg.workflow.status === "completed" &&
               msg.workflow.final_content &&
               (currentMode === AppMode.Graph ? (
-                <div className="mt-4 p-4 border-2 border-gray-200 rounded-lg">
+                <div className="mt-4 p-4 border-2 border-gray-200 rounded-lg flex-1 h-full">
                   <KnowledgeGraph graphData={JSON.parse(msg.workflow.final_content)} />
                 </div>
               ) : (
@@ -407,9 +407,9 @@ const ChatApp: React.FC = () => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }} className="p-4 h-full flex flex-col">
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.4 }} className="p-4 h-full flex flex-1 flex-col min-w-0">
       <motion.div
-        className="bg-white shadow-xl flex flex-col h-full rounded-xl overflow-hidden border border-gray-100"
+        className="bg-white shadow-xl flex flex-1 flex-col h-full rounded-xl overflow-hidden border border-gray-100"
         initial={{ y: 20 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
@@ -436,29 +436,7 @@ const ChatApp: React.FC = () => {
         </div>
 
         <div className="flex-1 overflow-hidden relative">
-          <div className="flex h-full flex-col relative overflow-hidden">
-            {/* <AnimatePresence>
-              {sourcePanelOpen && selectedMessage && (
-                <motion.div
-                  initial={{ x: "100%", opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: "100%", opacity: 0 }}
-                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                  className="absolute top-0 right-0 z-10 h-full w-[300px] sm:w-[320px] md:w-[380px] border-l bg-white shadow-md"
-                >
-                  <div className="flex justify-between items-center p-3 border-b bg-gray-50">
-                    <h3 className="font-medium text-sm">资料来源</h3>
-                    <Button variant="ghost" size="icon" onClick={closeSourcePanel} className="h-8 w-8 rounded-full hover:bg-gray-200">
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  <div className="h-full overflow-auto">
-                    <SourcePanel message={selectedMessage} />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence> */}
-
+          <div className="flex flex-1 h-full flex-col relative overflow-hidden">
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-4 space-y-6">
@@ -472,7 +450,7 @@ const ChatApp: React.FC = () => {
                 </div>
               ) : (
                 messages.map((msg) => (
-                  <div key={msg.id} className="mt-2">
+                  <div key={msg.id} className="mt-2 w-full">
                     {msg.role === "user" ? (
                       <ChatMessage
                         isAi={false}

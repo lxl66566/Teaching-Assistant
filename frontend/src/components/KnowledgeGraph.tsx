@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useRef } from "react";
 import ForceGraph2D from "react-force-graph-2d";
 
 interface Node {
@@ -33,15 +33,38 @@ const NODE_R = 5; // 节点半径，用于高亮环
 const NODE_TEXT_SIZE = 14; // 节点文本大小
 const LINK_TEXT_SIZE = 10; // 链接文本大小
 
+function removeEdgesWithUnknownNodes(graphData: GraphData): GraphData {
+  // 创建所有已知节点ID的集合，便于快速查找
+  const knownNodeIds = new Set(graphData.nodes.map((node) => node.id));
+
+  // 过滤edges，只保留那些source和target都在knownNodeIds中的edges
+  const filteredEdges = graphData.edges.filter((edge) => {
+    // 处理source
+    const sourceId = typeof edge.source === "string" ? edge.source : edge.source.id;
+    // 处理target
+    const targetId = typeof edge.target === "string" ? edge.target : edge.target.id;
+
+    return knownNodeIds.has(sourceId) && knownNodeIds.has(targetId);
+  });
+
+  // 返回新的GraphData对象，保持原始nodes不变，只更新edges
+  return {
+    nodes: [...graphData.nodes],
+    edges: filteredEdges,
+  };
+}
+
 const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ graphData }) => {
   const [highlightNodes, setHighlightNodes] = useState(new Set<Node>());
   const [highlightLinks, setHighlightLinks] = useState(new Set<Link>());
   const [hoverNode, setHoverNode] = useState<Node | null>(null);
+  const containerRef = useRef(null);
 
   // 转换数据格式以适应 react-force-graph-2d
   const data = useMemo(() => {
-    const nodes = graphData.nodes.map((node) => ({ ...node }));
-    const links = graphData.edges.map((edge) => ({ ...edge }));
+    const newGraphData = removeEdgesWithUnknownNodes(graphData);
+    const nodes = newGraphData.nodes.map((node) => ({ ...node }));
+    const links = newGraphData.edges.map((edge) => ({ ...edge }));
 
     // 交叉链接节点对象，用于高亮功能
     links.forEach((link) => {
@@ -151,47 +174,51 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ graphData }) => {
   }, []);
 
   return (
-    <ForceGraph2D
-      graphData={data}
-      nodeRelSize={NODE_R}
-      autoPauseRedraw={false}
-      linkWidth={(link) => (highlightLinks.has(link) ? 5 : 1)}
-      linkDirectionalParticles={4}
-      linkDirectionalParticleWidth={(link) => (highlightLinks.has(link) ? 4 : 0)}
-      nodeCanvasObject={nodeCanvasObject} // 文本渲染和高亮环
-      nodePointerAreaPaint={nodePointerAreaPaint} // 鼠标区域绘制
-      onNodeHover={handleNodeHover}
-      onLinkHover={handleLinkHover}
-      linkCanvasObject={(link, ctx, globalScale) => {
-        const start = link.source as Node;
-        const end = link.target as Node;
+    <div ref={containerRef} className="w-full h-96">
+      <ForceGraph2D
+        width={containerRef.current?.clientWidth}
+        height={containerRef.current?.clientHeight}
+        graphData={data}
+        nodeRelSize={NODE_R}
+        autoPauseRedraw={false}
+        linkWidth={(link) => (highlightLinks.has(link) ? 5 : 1)}
+        linkDirectionalParticles={4}
+        linkDirectionalParticleWidth={(link) => (highlightLinks.has(link) ? 4 : 0)}
+        nodeCanvasObject={nodeCanvasObject} // 文本渲染和高亮环
+        nodePointerAreaPaint={nodePointerAreaPaint} // 鼠标区域绘制
+        onNodeHover={handleNodeHover}
+        onLinkHover={handleLinkHover}
+        linkCanvasObject={(link, ctx, globalScale) => {
+          const start = link.source as Node;
+          const end = link.target as Node;
 
-        // 绘制链接
-        ctx.beginPath();
-        ctx.moveTo(start.x!, start.y!);
-        ctx.lineTo(end.x!, end.y!);
-        ctx.lineWidth = highlightLinks.has(link) ? 5 : 1;
-        ctx.strokeStyle = highlightLinks.has(link) ? "red" : "#ccc";
-        ctx.stroke();
+          // 绘制链接
+          ctx.beginPath();
+          ctx.moveTo(start.x!, start.y!);
+          ctx.lineTo(end.x!, end.y!);
+          ctx.lineWidth = highlightLinks.has(link) ? 5 : 1;
+          ctx.strokeStyle = highlightLinks.has(link) ? "red" : "#ccc";
+          ctx.stroke();
 
-        // 绘制链接标签
-        if (link.label) {
-          const label = link.label;
-          const fontSize = LINK_TEXT_SIZE / globalScale;
-          ctx.font = `${fontSize}px Sans-Serif`;
-          const textWidth = ctx.measureText(label).width;
-          const x = (start.x! + end.x!) / 2;
-          const y = (start.y! + end.y!) / 2;
+          // 绘制链接标签
+          if (link.label) {
+            const label = link.label;
+            const fontSize = LINK_TEXT_SIZE / globalScale;
+            ctx.font = `${fontSize}px Sans-Serif`;
+            const textWidth = ctx.measureText(label).width;
+            const x = (start.x! + end.x!) / 2;
+            const y = (start.y! + end.y!) / 2;
 
-          ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-          ctx.fillRect(x - textWidth / 2 - 2, y - fontSize / 2 - 2, textWidth + 4, fontSize + 4);
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillStyle = "#333";
-          ctx.fillText(label, x, y);
-        }
-      }}
-    />
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.fillRect(x - textWidth / 2 - 2, y - fontSize / 2 - 2, textWidth + 4, fontSize + 4);
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#333";
+            ctx.fillText(label, x, y);
+          }
+        }}
+      />
+    </div>
   );
 };
 

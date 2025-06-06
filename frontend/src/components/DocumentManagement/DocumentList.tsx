@@ -337,7 +337,7 @@ const DocumentList = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative flex-1 flex flex-col">
       <CardContent>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">

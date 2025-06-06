@@ -221,7 +221,7 @@ export const ModelConfigPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="p-6 max-w-4xl mx-auto flex-1">
       <h1 className="text-2xl font-bold mb-6">模型配置</h1>
       <div className="mb-6 text-sm text-gray-500">
         当前使用模型：
