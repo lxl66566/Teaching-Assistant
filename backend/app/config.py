@@ -30,6 +30,7 @@ class Settings(BaseSettings):
 
     # ollama 配置
     OLLAMA_BASE_URL: str = "http://127.0.0.1:11434"
+    OLLAMA_BASE_URL_2: str = "http://ollama:11434"
 
     MAX_UPLOAD_SIZE: int = 100 * 1024 * 1024  # 100MB
     ALLOWED_EXTENSIONS: set[str] = {
@@ -53,6 +54,16 @@ class Settings(BaseSettings):
         env_file=".env",
         extra="ignore",
     )
+
+
+def is_in_docker() -> bool:
+    """
+    判断是否在Docker容器中运行。
+    """
+    try:
+        return Path("/.dockerenv").exists()
+    except Exception:
+        return False
 
 
 def load_settings(config_file: Optional[Path] = None) -> Settings:
@@ -96,6 +107,10 @@ def load_settings(config_file: Optional[Path] = None) -> Settings:
     settings_instance.CHROMA_DIRECTORY.mkdir(parents=True, exist_ok=True)
     settings_instance.LOG_DIR.mkdir(parents=True, exist_ok=True)
     settings_instance.UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
+    # 如果是在Docker容器中运行，则使用备用Ollama URL
+    if is_in_docker():
+        settings_instance.OLLAMA_BASE_URL = settings_instance.OLLAMA_BASE_URL_2
 
     return settings_instance
 

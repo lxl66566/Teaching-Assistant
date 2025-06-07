@@ -1,3 +1,6 @@
 /test.py
 /test.*
 /data/
+src
+ollama_data
+backend_data

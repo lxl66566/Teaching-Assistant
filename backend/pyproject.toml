@@ -31,7 +31,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=8.4.0", "pytest-asyncio>=1.0.0"]
+dev = ["pipdeptree>=2.26.1", "pytest>=8.4.0", "pytest-asyncio>=1.0.0"]
 
 [tool.uv.sources]
 agenticwrapper = { git = "https://github.com/lxl66566/AgenticWrapper" }

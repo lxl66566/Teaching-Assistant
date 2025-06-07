@@ -16,6 +16,8 @@ UPLOAD_DIR = "./data/upload"
 
 # ollama 配置
 OLLAMA_BASE_URL = "http://127.0.0.1:11434"
+# 备用 ollama 配置，当运行在容器时使用
+OLLAMA_BASE_URL_2 = "http://ollama:11434"
 
 # 文件上传限制
 MAX_UPLOAD_SIZE = 314572800                                                    # 300MB
