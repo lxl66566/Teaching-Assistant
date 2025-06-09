@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 import { Card } from "@/components/ui/card";
-import { MessageSquarePlus } from 'lucide-react';
+import { MessageSquarePlus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FollowUpQuestionsProps {
@@ -9,10 +9,10 @@ interface FollowUpQuestionsProps {
   className?: string;
 }
 
-const FollowUpQuestions: React.FC<FollowUpQuestionsProps> = ({ 
-  questions, 
+const FollowUpQuestions: React.FC<FollowUpQuestionsProps> = ({
+  questions,
   onQuestionClick,
-  className 
+  className,
 }) => {
   return (
     <div className={cn("space-y-3", className)}>
@@ -21,11 +21,11 @@ const FollowUpQuestions: React.FC<FollowUpQuestionsProps> = ({
         {questions.map((question, index) => (
           <Card
             key={index}
-            className="hover:bg-gray-50 transition-colors cursor-pointer group"
+            className="group cursor-pointer transition-colors hover:bg-gray-50"
             onClick={() => onQuestionClick?.(question)}
           >
-            <div className="p-3 flex items-start gap-3">
-              <MessageSquarePlus className="w-5 h-5 text-gray-400 group-hover:text-blue-500 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3 p-3">
+              <MessageSquarePlus className="mt-0.5 h-5 w-5 shrink-0 text-gray-400 group-hover:text-blue-500" />
               <span className="text-sm text-gray-600 group-hover:text-gray-900">
                 {question}
               </span>
@@ -37,4 +37,4 @@ const FollowUpQuestions: React.FC<FollowUpQuestionsProps> = ({
   );
 };
 
-export default FollowUpQuestions; 
+export default FollowUpQuestions;

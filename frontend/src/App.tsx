@@ -13,7 +13,10 @@ function App() {
           <Route path="/" element={<ChatApp />} />
           <Route path="/documents" element={<DocumentManagementApp />} />
           <Route path="/model-config" element={<ModelConfigPage />} />
-          <Route path="*" element={<div className="p-8 text-center">Page Not Found</div>} />
+          <Route
+            path="*"
+            element={<div className="p-8 text-center">Page Not Found</div>}
+          />
         </Route>
       </Routes>
       <Toaster />

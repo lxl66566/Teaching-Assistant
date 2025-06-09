@@ -23,7 +23,11 @@ export const ModeProvider: React.FC<ModeProviderProps> = ({ children }) => {
     setCurrentMode(mode);
   };
 
-  return <ModeContext.Provider value={{ currentMode, setMode }}>{children}</ModeContext.Provider>;
+  return (
+    <ModeContext.Provider value={{ currentMode, setMode }}>
+      {children}
+    </ModeContext.Provider>
+  );
 };
 
 // 自定义 Hook 方便组件使用 Context

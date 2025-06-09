@@ -1,6 +1,13 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Home, Terminal, Key, Search, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import {
+  Home,
+  Terminal,
+  Key,
+  Search,
+  PanelLeftClose,
+  PanelLeftOpen,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import {
@@ -32,22 +39,31 @@ export function Sidebar() {
   return (
     <div
       className={cn(
-        "flex h-screen flex-col justify-between border-r bg-gray-50 text-gray-700 pb-4 transition-all duration-300 relative",
+        "relative flex h-screen flex-col justify-between border-r bg-gray-50 pb-4 text-gray-700 transition-all duration-300",
         expanded ? "w-56" : "w-16",
       )}
     >
       {/* Logo and Version */}
-      <div className="flex items-center justify-center px-4 h-16 border-b border-gray-200">
+      <div className="flex h-16 items-center justify-center border-b border-gray-200 px-4">
         {expanded ? (
           <div className="flex items-center">
             <span className="text-xl font-semibold">{config.appName}</span>
-            <span className="text-xs text-gray-500 ml-2">{APP_VERSION}</span>
+            <span className="ml-2 text-xs text-gray-500">{APP_VERSION}</span>
           </div>
         ) : null}
 
         {/* Toggle Button - Integrated in header */}
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 mx-2 hover:bg-gray-100 rounded-md" onClick={() => setExpanded(!expanded)}>
-          {expanded ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+        <Button
+          variant="ghost"
+          size="sm"
+          className="mx-2 h-8 w-8 rounded-md p-0 hover:bg-gray-100"
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? (
+            <PanelLeftClose className="h-4 w-4" />
+          ) : (
+            <PanelLeftOpen className="h-4 w-4" />
+          )}
         </Button>
       </div>
 
@@ -60,8 +76,9 @@ export function Sidebar() {
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "w-full justify-start text-gray-700 hover:text-gray-900 hover:bg-gray-100",
-                  location.pathname === item.path && "bg-gray-100 text-gray-900 font-medium",
+                  "w-full justify-start text-gray-700 hover:bg-gray-100 hover:text-gray-900",
+                  location.pathname === item.path &&
+                    "bg-gray-100 font-medium text-gray-900",
                   expanded ? "" : "justify-center px-2",
                 )}
               >
@@ -94,7 +111,12 @@ export function Sidebar() {
       </div> */}
 
       {/* User Section */}
-      <div className={cn("pt-3 border-t border-gray-200 mt-2", expanded ? "px-3" : "px-2")}>
+      <div
+        className={cn(
+          "mt-2 border-t border-gray-200 pt-3",
+          expanded ? "px-3" : "px-2",
+        )}
+      >
         <DropdownMenu>
           <DropdownMenuTrigger asChild></DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">

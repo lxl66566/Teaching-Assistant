@@ -40,9 +40,11 @@ function removeEdgesWithUnknownNodes(graphData: GraphData): GraphData {
   // 过滤edges，只保留那些source和target都在knownNodeIds中的edges
   const filteredEdges = graphData.edges.filter((edge) => {
     // 处理source
-    const sourceId = typeof edge.source === "string" ? edge.source : edge.source.id;
+    const sourceId =
+      typeof edge.source === "string" ? edge.source : edge.source.id;
     // 处理target
-    const targetId = typeof edge.target === "string" ? edge.target : edge.target.id;
+    const targetId =
+      typeof edge.target === "string" ? edge.target : edge.target.id;
 
     return knownNodeIds.has(sourceId) && knownNodeIds.has(targetId);
   });
@@ -122,8 +124,12 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ graphData }) => {
 
       if (link) {
         highlightLinks.add(link);
-        const sourceNode = data.nodes.find((n) => n.id === (link.source as Node).id || n.id === link.source);
-        const targetNode = data.nodes.find((n) => n.id === (link.target as Node).id || n.id === link.target);
+        const sourceNode = data.nodes.find(
+          (n) => n.id === (link.source as Node).id || n.id === link.source,
+        );
+        const targetNode = data.nodes.find(
+          (n) => n.id === (link.target as Node).id || n.id === link.target,
+        );
         if (sourceNode) highlightNodes.add(sourceNode);
         if (targetNode) highlightNodes.add(targetNode);
       }
@@ -147,11 +153,18 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ graphData }) => {
       const fontSize = NODE_TEXT_SIZE / globalScale;
       ctx.font = `${fontSize}px Sans-Serif`;
       const textWidth = ctx.measureText(label).width;
-      const bckgDimensions: [number, number] = [textWidth, fontSize].map((n) => n + fontSize * 0.2) as [number, number]; // some padding
+      const bckgDimensions: [number, number] = [textWidth, fontSize].map(
+        (n) => n + fontSize * 0.2,
+      ) as [number, number]; // some padding
 
       // 绘制背景
       ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-      ctx.fillRect(node.x! - bckgDimensions[0] / 2, node.y! - bckgDimensions[1] / 2, bckgDimensions[0], bckgDimensions[1]);
+      ctx.fillRect(
+        node.x! - bckgDimensions[0] / 2,
+        node.y! - bckgDimensions[1] / 2,
+        bckgDimensions[0],
+        bckgDimensions[1],
+      );
 
       // 绘制文本
       ctx.textAlign = "center";
@@ -165,16 +178,24 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ graphData }) => {
     [highlightNodes, hoverNode],
   );
 
-  const nodePointerAreaPaint = useCallback((node: Node, color: string, ctx: CanvasRenderingContext2D) => {
-    ctx.fillStyle = color;
-    const bckgDimensions = node.__bckgDimensions;
-    if (bckgDimensions) {
-      ctx.fillRect(node.x! - bckgDimensions[0] / 2, node.y! - bckgDimensions[1] / 2, bckgDimensions[0], bckgDimensions[1]);
-    }
-  }, []);
+  const nodePointerAreaPaint = useCallback(
+    (node: Node, color: string, ctx: CanvasRenderingContext2D) => {
+      ctx.fillStyle = color;
+      const bckgDimensions = node.__bckgDimensions;
+      if (bckgDimensions) {
+        ctx.fillRect(
+          node.x! - bckgDimensions[0] / 2,
+          node.y! - bckgDimensions[1] / 2,
+          bckgDimensions[0],
+          bckgDimensions[1],
+        );
+      }
+    },
+    [],
+  );
 
   return (
-    <div ref={containerRef} className="w-full h-96">
+    <div ref={containerRef} className="h-96 w-full">
       <ForceGraph2D
         width={containerRef.current?.clientWidth}
         height={containerRef.current?.clientHeight}
@@ -183,7 +204,9 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ graphData }) => {
         autoPauseRedraw={false}
         linkWidth={(link) => (highlightLinks.has(link) ? 5 : 1)}
         linkDirectionalParticles={4}
-        linkDirectionalParticleWidth={(link) => (highlightLinks.has(link) ? 4 : 0)}
+        linkDirectionalParticleWidth={(link) =>
+          highlightLinks.has(link) ? 4 : 0
+        }
         nodeCanvasObject={nodeCanvasObject} // 文本渲染和高亮环
         nodePointerAreaPaint={nodePointerAreaPaint} // 鼠标区域绘制
         onNodeHover={handleNodeHover}
@@ -210,7 +233,12 @@ const KnowledgeGraph: React.FC<KnowledgeGraphProps> = ({ graphData }) => {
             const y = (start.y! + end.y!) / 2;
 
             ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-            ctx.fillRect(x - textWidth / 2 - 2, y - fontSize / 2 - 2, textWidth + 4, fontSize + 4);
+            ctx.fillRect(
+              x - textWidth / 2 - 2,
+              y - fontSize / 2 - 2,
+              textWidth + 4,
+              fontSize + 4,
+            );
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillStyle = "#333";

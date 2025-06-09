@@ -1,13 +1,36 @@
 import React, { useState, useEffect } from "react";
 import { CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Trash2, Plus, FileText, FileSpreadsheet, File, FileCode, FileImage, RefreshCcw, Loader2, Pencil } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Trash2,
+  Plus,
+  FileText,
+  FileSpreadsheet,
+  File,
+  FileCode,
+  FileImage,
+  RefreshCcw,
+  Loader2,
+  Pencil,
+} from "lucide-react";
 import { Button } from "../ui/button";
 import { FileUploadModal } from "./FileUploadModal";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/components/ui/use-toast";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { knowledgeAPI } from "@/lib/api";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
@@ -22,7 +45,9 @@ const DocumentList = () => {
   const [isLoading] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   // Add a new state for tracking the last selected index
-  const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(null);
+  const [lastSelectedIndex, setLastSelectedIndex] = useState<number | null>(
+    null,
+  );
   const [searchText, setSearchText] = useState("");
   const [debouncedText, setDebouncedText] = useState("");
 
@@ -75,7 +100,11 @@ const DocumentList = () => {
       .updateDocument(docId, newName, undefined)
       .then((res) => {
         console.log("更新文档状态结果", res);
-        setDocuments(documents.map((doc) => (doc.id === docId ? { ...doc, filename: newName } : doc)));
+        setDocuments(
+          documents.map((doc) =>
+            doc.id === docId ? { ...doc, filename: newName } : doc,
+          ),
+        );
         toast({
           title: "Success",
           description: "文档重命名成功",
@@ -199,14 +228,21 @@ const DocumentList = () => {
     } catch (error) {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : `文档 ${checked ? "启用" : "删除"} 失败`,
+        description:
+          error instanceof Error
+            ? error.message
+            : `文档 ${checked ? "启用" : "删除"} 失败`,
         variant: "danger",
       });
     }
   };
 
   // New handler for checkbox clicks to support shift-range selection
-  const handleCheckboxClick = (docId: string, index: number, event: React.MouseEvent) => {
+  const handleCheckboxClick = (
+    docId: string,
+    index: number,
+    event: React.MouseEvent,
+  ) => {
     event.stopPropagation();
     const isSelected = selectedIds.has(docId);
 
@@ -238,7 +274,9 @@ const DocumentList = () => {
   const handleMultipleDelete = async () => {
     const selectedDocs = documents.filter((doc) => selectedIds.has(doc.id));
 
-    if (!window.confirm(`你确定要删除这 ${selectedDocs.length} 个文件/文件夹吗`)) {
+    if (
+      !window.confirm(`你确定要删除这 ${selectedDocs.length} 个文件/文件夹吗`)
+    ) {
       return;
     }
 
@@ -251,11 +289,17 @@ const DocumentList = () => {
 
     try {
       // 并行删除所有文档
-      const deleteResults = await Promise.allSettled(selectedDocs.map((doc) => knowledgeAPI.deleteDocument(doc.id)));
+      const deleteResults = await Promise.allSettled(
+        selectedDocs.map((doc) => knowledgeAPI.deleteDocument(doc.id)),
+      );
 
       // 统计删除结果
-      const failedCount = deleteResults.filter((result) => result.status === "rejected").length;
-      const successIds = deleteResults.filter((result) => result.status === "fulfilled").map((result) => result.value);
+      const failedCount = deleteResults.filter(
+        (result) => result.status === "rejected",
+      ).length;
+      const successIds = deleteResults
+        .filter((result) => result.status === "fulfilled")
+        .map((result) => result.value);
 
       if (failedCount > 0) {
         toast({
@@ -275,7 +319,9 @@ const DocumentList = () => {
       toast({
         variant: "danger",
         title: "错误",
-        description: "删除过程中发生错误：" + (error instanceof Error ? error.message : "未知错误"),
+        description:
+          "删除过程中发生错误：" +
+          (error instanceof Error ? error.message : "未知错误"),
       });
     }
   };
@@ -286,7 +332,11 @@ const DocumentList = () => {
       // 创建一个 Promise 数组来存储所有的更新操作
       const updatePromises = Array.from(selectedIds).map(async (id) => {
         try {
-          const response = await knowledgeAPI.updateDocument(id, undefined, enable);
+          const response = await knowledgeAPI.updateDocument(
+            id,
+            undefined,
+            enable,
+          );
           return { id, success: true, response };
         } catch (error) {
           return { id, success: false, error };
@@ -337,18 +387,32 @@ const DocumentList = () => {
   };
 
   return (
-    <div className="relative flex-1 flex flex-col">
+    <div className="relative flex flex-1 flex-col">
       <CardContent>
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Input placeholder="搜索文档..." className="h-9 w-[200px]" onChange={(e) => setSearchText(e.target.value)} />
+            <Input
+              placeholder="搜索文档..."
+              className="h-9 w-[200px]"
+              onChange={(e) => setSearchText(e.target.value)}
+            />
           </div>
           <div className="flex items-center gap-2">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-9" onClick={fetchDocuments}>
-                    <RefreshCcw className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")} />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-9"
+                    onClick={fetchDocuments}
+                  >
+                    <RefreshCcw
+                      className={cn(
+                        "mr-2 h-4 w-4",
+                        isLoading && "animate-spin",
+                      )}
+                    />
                     刷新
                   </Button>
                 </TooltipTrigger>
@@ -357,8 +421,13 @@ const DocumentList = () => {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            <Button variant="default" size="sm" className="h-9" onClick={() => setIsUploadModalOpen(true)}>
-              <Plus className="h-4 w-4 mr-2" />
+            <Button
+              variant="default"
+              size="sm"
+              className="h-9"
+              onClick={() => setIsUploadModalOpen(true)}
+            >
+              <Plus className="mr-2 h-4 w-4" />
               上传
             </Button>
           </div>
@@ -369,7 +438,10 @@ const DocumentList = () => {
             <TableRow>
               <TableHead className="w-8">
                 <Checkbox
-                  checked={selectedIds.size === documents.length && documents.length > 0}
+                  checked={
+                    selectedIds.size === documents.length &&
+                    documents.length > 0
+                  }
                   onCheckedChange={(checked) => {
                     if (checked) {
                       setSelectedIds(new Set(documents.map((doc) => doc.id)));
@@ -389,9 +461,19 @@ const DocumentList = () => {
           </TableHeader>
           <TableBody>
             {documents
-              .filter((doc) => !debouncedText || doc.filename.toLowerCase().includes(debouncedText.toLowerCase()))
+              .filter(
+                (doc) =>
+                  !debouncedText ||
+                  doc.filename
+                    .toLowerCase()
+                    .includes(debouncedText.toLowerCase()),
+              )
               .map((doc: Document, index) => (
-                <TableRow key={doc.id} className={cn("hover:bg-gray-50")} draggable={false}>
+                <TableRow
+                  key={doc.id}
+                  className={cn("hover:bg-gray-50")}
+                  draggable={false}
+                >
                   <TableCell className="w-8">
                     <div onClick={(e) => handleCheckboxClick(doc.id, index, e)}>
                       <Checkbox checked={selectedIds.has(doc.id)} />
@@ -405,10 +487,15 @@ const DocumentList = () => {
                           autoFocus
                           defaultValue={doc.filename}
                           className="h-8 w-[200px]"
-                          onBlur={(e) => handleRenameDocument(doc.id, e.target.value)}
+                          onBlur={(e) =>
+                            handleRenameDocument(doc.id, e.target.value)
+                          }
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                              handleRenameDocument(doc.id, e.currentTarget.value);
+                              handleRenameDocument(
+                                doc.id,
+                                e.currentTarget.value,
+                              );
                             } else if (e.key === "Escape") {
                               setIsRenamingId(null);
                             }
@@ -416,7 +503,14 @@ const DocumentList = () => {
                         />
                       ) : (
                         <div className="flex items-center gap-2">
-                          <span className={cn("cursor-pointer", doc.type === "folder" && "font-medium hover:underline")} onClick={() => {}}>
+                          <span
+                            className={cn(
+                              "cursor-pointer",
+                              doc.type === "folder" &&
+                                "font-medium hover:underline",
+                            )}
+                            onClick={() => {}}
+                          >
                             {doc.filename}
                           </span>
                           <Button
@@ -460,10 +554,14 @@ const DocumentList = () => {
                       <Badge
                         variant="outline"
                         className={cn(
-                          doc.status === "completed" && "bg-green-100 text-green-800 border-green-200",
-                          doc.status === "failed" && "bg-red-100 text-red-800 border-red-200",
-                          doc.status === "pending" && "bg-orange-100 text-orange-800 border-orange-200",
-                          !doc.status && "bg-gray-100 text-gray-800 border-gray-200",
+                          doc.status === "completed" &&
+                            "border-green-200 bg-green-100 text-green-800",
+                          doc.status === "failed" &&
+                            "border-red-200 bg-red-100 text-red-800",
+                          doc.status === "pending" &&
+                            "border-orange-200 bg-orange-100 text-orange-800",
+                          !doc.status &&
+                            "border-gray-200 bg-gray-100 text-gray-800",
                         )}
                       >
                         {doc.status || "Unparsed"}
@@ -527,16 +625,23 @@ const DocumentList = () => {
 
         {/* Bottom action bar for multi-select */}
         {selectedIds.size > 0 && (
-          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white border rounded-lg shadow-lg flex items-center z-50">
-            <div className="flex items-center py-2 px-4 border-r">
-              <span className="font-medium">已选择 {selectedIds.size} 个文档</span>
+          <div className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 transform items-center rounded-lg border bg-white shadow-lg">
+            <div className="flex items-center border-r px-4 py-2">
+              <span className="font-medium">
+                已选择 {selectedIds.size} 个文档
+              </span>
             </div>
 
             <div className="flex items-center gap-8 p-2">
               <div className="flex items-center">
                 <span className="mr-3">启用/禁用</span>
                 <Switch
-                  checked={selectedIds.size > 0 && documents.filter((doc) => selectedIds.has(doc.id)).every((doc) => doc.enabled)}
+                  checked={
+                    selectedIds.size > 0 &&
+                    documents
+                      .filter((doc) => selectedIds.has(doc.id))
+                      .every((doc) => doc.enabled)
+                  }
                   onCheckedChange={(checked) => {
                     // Disable during operation to prevent double-clicks
                     if (toggleLoading) return;
@@ -547,15 +652,29 @@ const DocumentList = () => {
                 />
               </div>
 
-              <Button size="sm" variant="destructive" className="flex items-center" onClick={handleMultipleDelete} disabled={deleteLoading}>
-                {deleteLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Trash2 className="h-4 w-4 mr-2" />}
+              <Button
+                size="sm"
+                variant="destructive"
+                className="flex items-center"
+                onClick={handleMultipleDelete}
+                disabled={deleteLoading}
+              >
+                {deleteLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Trash2 className="mr-2 h-4 w-4" />
+                )}
                 删除文档
               </Button>
             </div>
           </div>
         )}
 
-        <FileUploadModal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} onUpload={handleUpload} />
+        <FileUploadModal
+          isOpen={isUploadModalOpen}
+          onClose={() => setIsUploadModalOpen(false)}
+          onUpload={handleUpload}
+        />
 
         {/* <AlertDialog open={showReindexDialog} onOpenChange={setShowReindexDialog}>
           <AlertDialogContent>

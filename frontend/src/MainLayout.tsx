@@ -8,7 +8,7 @@ export function MainLayout() {
     <div className="flex h-screen w-screen max-w-[100vw] overflow-auto bg-zinc-50">
       <Sidebar />
       <ModeProvider>
-        <div className="flex flex-col flex-1 min-w-0">
+        <div className="flex min-w-0 flex-1 flex-col">
           <Navbar />
           <main className="flex flex-1 overflow-auto p-0">
             <Outlet />

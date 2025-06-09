@@ -1,5 +1,10 @@
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 // import { Badge } from "@/components/ui/badge";
 // import { Backend, backendList, getCurrentBackend, updateCurrentBackend } from "@/config/backend";
@@ -16,8 +21,8 @@ export function Navbar() {
   // }, [currentBackend]);
 
   return (
-    <div className="border-b w-full bg-white">
-      <div className="flex h-16 items-center px-4 w-full">
+    <div className="w-full border-b bg-white">
+      <div className="flex h-16 w-full items-center px-4">
         <div className="flex items-center">
           {/* Backend Selector */}
           {/* <DropdownMenu>
@@ -42,7 +47,10 @@ export function Navbar() {
           {/* Mode Selector */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2 h-10">
+              <Button
+                variant="outline"
+                className="flex h-10 items-center gap-2"
+              >
                 {currentMode}
                 <ChevronDown className="h-4 w-4 opacity-50" />
               </Button>

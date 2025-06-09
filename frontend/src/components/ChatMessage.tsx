@@ -4,7 +4,12 @@ import chatbotIcon from "../assets/chatbot-icon.svg";
 import FollowUpQuestions from "./FollowUpQuestions";
 import { Button } from "@/components/ui/button";
 import { FileText, Copy, Check } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ChatMessageProps {
   isAi: boolean;
@@ -19,7 +24,15 @@ interface ChatMessageProps {
   };
 }
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, message, followUpQuestions = [], onFollowUpClick, state, onSourceClick, isSelected = false }) => {
+const ChatMessage: React.FC<ChatMessageProps> = ({
+  isAi,
+  message,
+  followUpQuestions = [],
+  onFollowUpClick,
+  state,
+  onSourceClick,
+  isSelected = false,
+}) => {
   const [copied, setCopied] = React.useState(false);
 
   const copyToClipboard = async () => {
@@ -33,7 +46,12 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, message, followUpQuesti
   };
 
   // 过滤掉状态消息
-  const cleanMessage = message.replace(/\{"status":\s*"end",\s*"node":\s*"generate",\s*"details":\s*"Node stream ended"\}/g, "").trim();
+  const cleanMessage = message
+    .replace(
+      /\{"status":\s*"end",\s*"node":\s*"generate",\s*"details":\s*"Node stream ended"\}/g,
+      "",
+    )
+    .trim();
 
   // 如果消息在清理后为空，则不渲染
   if (!cleanMessage) {
@@ -44,10 +62,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, message, followUpQuesti
   const sourceCount = hasSources ? state?.sources?.length : 0;
 
   return (
-    <div className="flex flex-col max-w-full group">
+    <div className="group flex max-w-full flex-col">
       {!isAi && (
-        <div className="flex justify-end w-full mb-1">
-          <div className="rounded-2xl p-4 bg-gradient-to-br from-blue-600 to-blue-700 text-white whitespace-pre-line max-w-[85%] shadow-sm hover:shadow-md transition-shadow overflow-hidden break-words">
+        <div className="mb-1 flex w-full justify-end">
+          <div className="max-w-[85%] overflow-hidden whitespace-pre-line break-words rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 p-4 text-white shadow-sm transition-shadow hover:shadow-md">
             <MarkdownRenderer
               // remarkPlugins={[remarkGfm, remarkBreaks]}
               // className="prose prose-sm max-w-none break-words text-white prose-headings:text-white prose-strong:text-white prose-a:text-blue-100 hover:prose-a:text-blue-50"
@@ -58,22 +76,37 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, message, followUpQuesti
       )}
 
       {isAi && (
-        <div className="flex flex-col w-full mb-1">
-          <div className="flex items-start gap-2 max-w-full">
-            <img src={chatbotIcon} alt="机器人" className="w-8 h-8 rounded-full shrink-0 mt-1 shadow-sm" />
-            <div className="flex-1 min-w-0 max-w-full">
+        <div className="mb-1 flex w-full flex-col">
+          <div className="flex max-w-full items-start gap-2">
+            <img
+              src={chatbotIcon}
+              alt="机器人"
+              className="mt-1 h-8 w-8 shrink-0 rounded-full shadow-sm"
+            />
+            <div className="min-w-0 max-w-full flex-1">
               <div
-                className={`rounded-2xl p-4 bg-white border overflow-hidden ${
-                  isSelected ? "border-blue-400 shadow-md ring-2 ring-blue-100" : "shadow-sm hover:shadow-md transition-shadow border-gray-100"
+                className={`overflow-hidden rounded-2xl border bg-white p-4 ${
+                  isSelected
+                    ? "border-blue-400 shadow-md ring-2 ring-blue-100"
+                    : "border-gray-100 shadow-sm transition-shadow hover:shadow-md"
                 }`}
               >
-                <div className="prose prose-sm max-w-none break-words overflow-auto relative">
-                  <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="prose prose-sm relative max-w-none overflow-auto break-words">
+                  <div className="absolute right-0 top-0 opacity-0 transition-opacity group-hover:opacity-100">
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <Button variant="ghost" size="icon" onClick={copyToClipboard} className="h-7 w-7 rounded-full hover:bg-gray-100">
-                            {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5 text-gray-400" />}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={copyToClipboard}
+                            className="h-7 w-7 rounded-full hover:bg-gray-100"
+                          >
+                            {copied ? (
+                              <Check className="h-3.5 w-3.5 text-green-500" />
+                            ) : (
+                              <Copy className="h-3.5 w-3.5 text-gray-400" />
+                            )}
                           </Button>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -98,7 +131,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, message, followUpQuesti
                             variant="outline"
                             size="sm"
                             onClick={onSourceClick}
-                            className="flex items-center gap-1 h-8 text-blue-700 border-blue-200 hover:bg-blue-50 transition-colors"
+                            className="flex h-8 items-center gap-1 border-blue-200 text-blue-700 transition-colors hover:bg-blue-50"
                           >
                             <FileText className="h-3.5 w-3.5" />
                             <span>参考资料 ({sourceCount})</span>
@@ -112,8 +145,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ isAi, message, followUpQuesti
                   )}
 
                   {followUpQuestions && followUpQuestions.length > 0 && (
-                    <div className="w-full mt-2">
-                      <FollowUpQuestions questions={followUpQuestions} onQuestionClick={onFollowUpClick} />
+                    <div className="mt-2 w-full">
+                      <FollowUpQuestions
+                        questions={followUpQuestions}
+                        onQuestionClick={onFollowUpClick}
+                      />
                     </div>
                   )}
                 </div>

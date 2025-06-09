@@ -4,8 +4,8 @@ import DocumentList from "@/components/DocumentManagement/DocumentList";
 
 const DocumentManagementApp: React.FC = () => {
   return (
-    <div className="min-h-screen flex flex-col flex-1 p-6">
-      <Card className="bg-white shadow-xl rounded-xl h-full flex flex-col flex-1 pt-4">
+    <div className="flex min-h-screen flex-1 flex-col p-6">
+      <Card className="flex h-full flex-1 flex-col rounded-xl bg-white pt-4 shadow-xl">
         <DocumentList />
       </Card>
     </div>

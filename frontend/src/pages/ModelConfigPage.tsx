@@ -4,7 +4,12 @@ import * as Select from "@radix-ui/react-select";
 import * as Form from "@radix-ui/react-form";
 import { useToast } from "@/components/ui/use-toast";
 import { modelAPI } from "../lib/model_api";
-import { ModelConfigureRequest, CurrentModelResponse, SearchModel, LocalModel } from "../types/model";
+import {
+  ModelConfigureRequest,
+  CurrentModelResponse,
+  SearchModel,
+  LocalModel,
+} from "../types/model";
 
 export const ModelConfigPage: React.FC = () => {
   // 修改状态管理
@@ -13,21 +18,30 @@ export const ModelConfigPage: React.FC = () => {
   const [selectedProvider, setSelectedProvider] = useState("");
   const [providerModels, setProviderModels] = useState<string[]>([]);
   const [localModels, setLocalModels] = useState<LocalModel[]>([]);
-  const [localModelsName, setLocalModelsName] = useState<Set<string>>(new Set());
+  const [localModelsName, setLocalModelsName] = useState<Set<string>>(
+    new Set(),
+  );
   const [selectedModel, setSelectedModel] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [currentModel, setCurrentModel] = useState<CurrentModelResponse | null>(null);
+  const [currentModel, setCurrentModel] = useState<CurrentModelResponse | null>(
+    null,
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchModel[]>([]);
-  const [downloadingModels, setDownloadingModels] = useState<Record<string, number>>({});
+  const [downloadingModels, setDownloadingModels] = useState<
+    Record<string, number>
+  >({});
 
   const { toast } = useToast();
 
   const fetchRemoteProvidersData = async () => {
     try {
-      const [currentModelRes, providersRes] = await Promise.all([modelAPI.getCurrentModel(), modelAPI.getProviders()]);
+      const [currentModelRes, providersRes] = await Promise.all([
+        modelAPI.getCurrentModel(),
+        modelAPI.getProviders(),
+      ]);
       console.log(currentModelRes, providersRes);
       if (currentModelRes?.type === "null") {
         setCurrentModel(null);
@@ -212,7 +226,13 @@ export const ModelConfigPage: React.FC = () => {
     toast({
       title: title,
       description: description,
-      variant: title.includes("成功") ? "tip" : title.includes("错误") ? "danger" : title.includes("警告") ? "warning" : "info",
+      variant: title.includes("成功")
+        ? "tip"
+        : title.includes("错误")
+          ? "danger"
+          : title.includes("警告")
+            ? "warning"
+            : "info",
     });
   };
 
@@ -221,8 +241,8 @@ export const ModelConfigPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto flex-1">
-      <h1 className="text-2xl font-bold mb-6">模型配置</h1>
+    <div className="mx-auto max-w-4xl flex-1 p-6">
+      <h1 className="mb-6 text-2xl font-bold">模型配置</h1>
       <div className="mb-6 text-sm text-gray-500">
         当前使用模型：
         {currentModel ? (
@@ -236,12 +256,21 @@ export const ModelConfigPage: React.FC = () => {
         )}
       </div>
 
-      <Tabs.Root value={activeTab} onValueChange={(value) => setActiveTab(value as "remote" | "local")}>
-        <Tabs.List className="flex border-b mb-6">
-          <Tabs.Trigger value="remote" className="px-4 py-2 focus:outline-none data-[state=active]:border-b-2 data-[state=active]:border-blue-500">
+      <Tabs.Root
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value as "remote" | "local")}
+      >
+        <Tabs.List className="mb-6 flex border-b">
+          <Tabs.Trigger
+            value="remote"
+            className="px-4 py-2 focus:outline-none data-[state=active]:border-b-2 data-[state=active]:border-blue-500"
+          >
             云服务 API
           </Tabs.Trigger>
-          <Tabs.Trigger value="local" className="px-4 py-2 focus:outline-none data-[state=active]:border-b-2 data-[state=active]:border-blue-500">
+          <Tabs.Trigger
+            value="local"
+            className="px-4 py-2 focus:outline-none data-[state=active]:border-b-2 data-[state=active]:border-blue-500"
+          >
             本地模型
           </Tabs.Trigger>
         </Tabs.List>
@@ -249,16 +278,25 @@ export const ModelConfigPage: React.FC = () => {
         <Tabs.Content value="remote">
           <Form.Root className="space-y-6">
             <Form.Field name="provider">
-              <Form.Label className="block text-sm font-medium mb-2">选择服务提供商</Form.Label>
-              <Select.Root value={selectedProvider} onValueChange={setSelectedProvider}>
-                <Select.Trigger className="w-full px-4 py-2 border rounded-md">
+              <Form.Label className="mb-2 block text-sm font-medium">
+                选择服务提供商
+              </Form.Label>
+              <Select.Root
+                value={selectedProvider}
+                onValueChange={setSelectedProvider}
+              >
+                <Select.Trigger className="w-full rounded-md border px-4 py-2">
                   <Select.Value placeholder="选择服务提供商" />
                 </Select.Trigger>
                 <Select.Portal>
-                  <Select.Content className="bg-white border rounded-md shadow-lg">
+                  <Select.Content className="rounded-md border bg-white shadow-lg">
                     <Select.Viewport>
                       {providers.map((provider) => (
-                        <Select.Item key={provider} value={provider} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                        <Select.Item
+                          key={provider}
+                          value={provider}
+                          className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                        >
                           <Select.ItemText>{provider}</Select.ItemText>
                         </Select.Item>
                       ))}
@@ -271,16 +309,25 @@ export const ModelConfigPage: React.FC = () => {
             {selectedProvider && (
               <>
                 <Form.Field name="model">
-                  <Form.Label className="block text-sm font-medium mb-2">选择模型</Form.Label>
-                  <Select.Root value={selectedModel} onValueChange={setSelectedModel}>
-                    <Select.Trigger className="w-full px-4 py-2 border rounded-md">
+                  <Form.Label className="mb-2 block text-sm font-medium">
+                    选择模型
+                  </Form.Label>
+                  <Select.Root
+                    value={selectedModel}
+                    onValueChange={setSelectedModel}
+                  >
+                    <Select.Trigger className="w-full rounded-md border px-4 py-2">
                       <Select.Value placeholder="选择模型" />
                     </Select.Trigger>
                     <Select.Portal>
-                      <Select.Content className="bg-white border rounded-md shadow-lg">
+                      <Select.Content className="rounded-md border bg-white shadow-lg">
                         <Select.Viewport>
                           {providerModels.map((model) => (
-                            <Select.Item key={model} value={model} className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                            <Select.Item
+                              key={model}
+                              value={model}
+                              className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+                            >
                               <Select.ItemText>{model}</Select.ItemText>
                             </Select.Item>
                           ))}
@@ -291,11 +338,13 @@ export const ModelConfigPage: React.FC = () => {
                 </Form.Field>
 
                 <Form.Field name="apiKey">
-                  <Form.Label className="block text-sm font-medium mb-2">API Key</Form.Label>
+                  <Form.Label className="mb-2 block text-sm font-medium">
+                    API Key
+                  </Form.Label>
                   <Form.Control asChild>
                     <input
                       type="password"
-                      className="w-full px-4 py-2 border rounded-md"
+                      className="w-full rounded-md border px-4 py-2"
                       value={apiKey || ""}
                       onChange={(e) => setApiKey(e.target.value)}
                       placeholder="输入 API Key"
@@ -308,29 +357,44 @@ export const ModelConfigPage: React.FC = () => {
         </Tabs.Content>
 
         <Tabs.Content value="local">
-          <Form.Root className="space-y-6" onSubmit={handleSearch} onReset={handleReset}>
+          <Form.Root
+            className="space-y-6"
+            onSubmit={handleSearch}
+            onReset={handleReset}
+          >
             <div className="mb-6">
               <Form.Field name="searchQuery">
-                <Form.Label className="block text-sm font-medium mb-2">下载新模型到本地</Form.Label>
+                <Form.Label className="mb-2 block text-sm font-medium">
+                  下载新模型到本地
+                </Form.Label>
                 <div className="flex gap-2">
                   <Form.Control asChild>
                     <input
                       type="text"
-                      className="flex-1 px-4 py-2 border rounded-md"
+                      className="flex-1 rounded-md border px-4 py-2"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="输入关键词搜索模型"
                     />
                   </Form.Control>
                   {searchResults.length > 0 ? (
-                    <button type="reset" className="px-4 py-2 bg-red-400 text-gray-100 rounded-md hover:bg-red-600" onClick={handleReset}>
+                    <button
+                      type="reset"
+                      className="rounded-md bg-red-400 px-4 py-2 text-gray-100 hover:bg-red-600"
+                      onClick={handleReset}
+                    >
                       清空
                     </button>
                   ) : null}
                   {isSearching ? (
-                    <div className="px-4 py-2 bg-gray-300 text-white rounded-md hover:bg-gray-400">搜索中...</div>
+                    <div className="rounded-md bg-gray-300 px-4 py-2 text-white hover:bg-gray-400">
+                      搜索中...
+                    </div>
                   ) : (
-                    <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                    <button
+                      type="submit"
+                      className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                    >
                       搜索
                     </button>
                   )}
@@ -340,30 +404,43 @@ export const ModelConfigPage: React.FC = () => {
 
             {searchResults.length > 0 && (
               <div className="mb-6">
-                <h3 className="text-lg font-medium mb-4">搜索结果</h3>
+                <h3 className="mb-4 text-lg font-medium">搜索结果</h3>
                 <div className="space-y-4">
                   {searchResults.map((model) => (
-                    <div key={model.name} className="p-4 border rounded-md">
-                      <div className="flex justify-between items-start mb-2">
+                    <div key={model.name} className="rounded-md border p-4">
+                      <div className="mb-2 flex items-start justify-between">
                         <div>
                           <h4 className="font-medium">{model.name}</h4>
-                          <p className="text-sm text-gray-500">{model.description}</p>
-                          <p className="text-sm text-gray-500">大小: {model.size}</p>
+                          <p className="text-sm text-gray-500">
+                            {model.description}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            大小: {model.size}
+                          </p>
                         </div>
                         {downloadingModels[model.name] !== undefined ? (
                           <div className="w-32">
-                            <div className="h-2 bg-gray-200 rounded">
-                              <div className="h-full bg-blue-500 rounded" style={{ width: `${downloadingModels[model.name]}%` }} />
+                            <div className="h-2 rounded bg-gray-200">
+                              <div
+                                className="h-full rounded bg-blue-500"
+                                style={{
+                                  width: `${downloadingModels[model.name]}%`,
+                                }}
+                              />
                             </div>
-                            <p className="text-sm text-center mt-1">{downloadingModels[model.name].toFixed(0)}%</p>
+                            <p className="mt-1 text-center text-sm">
+                              {downloadingModels[model.name].toFixed(0)}%
+                            </p>
                           </div>
                         ) : localModelsName.has(model.name) ? (
-                          <span className="px-4 py-2 bg-gray-300 text-white rounded-md hover:bg-gray-400">已下载</span>
+                          <span className="rounded-md bg-gray-300 px-4 py-2 text-white hover:bg-gray-400">
+                            已下载
+                          </span>
                         ) : (
                           <button
                             type="button"
                             onClick={() => handleDownload(model)}
-                            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                            className="rounded-md bg-green-500 px-4 py-2 text-white hover:bg-green-600"
                           >
                             下载
                           </button>
@@ -376,26 +453,42 @@ export const ModelConfigPage: React.FC = () => {
             )}
 
             <div>
-              <h3 className="text-lg font-medium mb-4">本地模型</h3>
+              <h3 className="mb-4 text-lg font-medium">本地模型</h3>
               <div className="space-y-4">
                 {localModels.map((model) => (
                   <div
                     key={`${model.name}-${model.digest}`}
-                    className={`p-4 border rounded-md cursor-pointer transition-colors ${
-                      selectedModel === model.name ? "border-blue-500 bg-blue-50" : "hover:border-gray-400"
+                    className={`cursor-pointer rounded-md border p-4 transition-colors ${
+                      selectedModel === model.name
+                        ? "border-blue-500 bg-blue-50"
+                        : "hover:border-gray-400"
                     }`}
                     onClick={() => handleSelectLocalModel(model)}
                   >
-                    <div className="flex justify-between items-center">
+                    <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium">{model.name}</h4>
-                        <p className="text-sm text-gray-500">状态: {model.status === "ready" ? "就绪" : "下载中"}</p>
-                        <p className="text-sm text-gray-500">大小: {model.size}</p>
+                        <p className="text-sm text-gray-500">
+                          状态: {model.status === "ready" ? "就绪" : "下载中"}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          大小: {model.size}
+                        </p>
                       </div>
-                      <div className="flex items-center justify-center w-6 h-6">
+                      <div className="flex h-6 w-6 items-center justify-center">
                         {selectedModel === model.name && (
-                          <svg className="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          <svg
+                            className="h-5 w-5 text-blue-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
                           </svg>
                         )}
                       </div>
@@ -412,7 +505,7 @@ export const ModelConfigPage: React.FC = () => {
         <button
           onClick={handleSaveConfig}
           disabled={!selectedModel}
-          className={`px-4 py-2 rounded-md ${!selectedModel ? "bg-gray-300 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 text-white"}`}
+          className={`rounded-md px-4 py-2 ${!selectedModel ? "cursor-not-allowed bg-gray-300" : "bg-blue-500 text-white hover:bg-blue-600"}`}
         >
           保存配置
         </button>
