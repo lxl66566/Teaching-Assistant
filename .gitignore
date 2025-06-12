@@ -4,3 +4,4 @@
 src
 ollama_data
 backend_data
+dist/

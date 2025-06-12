@@ -51,4 +51,4 @@ WORKDIR /app/backend
 EXPOSE 8000
 
 # Set entrypoint: activate virtual environment and run the app
-CMD ["uv", "run", "--prerelease=allow", "--no-dev", "python", "-m", "app"]
+CMD ["uv", "run", "--prerelease=allow", "--no-dev", "--locked", "python", "-m", "app"]

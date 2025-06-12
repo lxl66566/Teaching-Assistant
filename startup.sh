@@ -1,3 +1,3 @@
 
 cd backend
-uv run --prerelease=allow -m app $@
+uv run --prerelease=allow --locked -m app $@
